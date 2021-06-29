@@ -7,10 +7,8 @@ from sleepdetectors import SLEEP_DETECTOR
 from configs import *
 
 
-
 Stat = namedtuple("Stat","Interval_Type  Interval  Start_Date  Start_Day  Start_Time  End_Date  End_Day  End_Time  Duration  Off_Wrist  Off_Wrist_Per  Total_AC  Avg_AC_min  Avg_AC_epoch  Std_AC  Max_AC  Inv_Time_AC  Invalid_AC_Per  Inv_Time_SW  Invalid_SW_Per  Onset_Latency  Snooze_Time  Efficiency  WASO  Wake_Time  Wake_Per  Wake_Bouts_Num  Avg_Wake_B  Sleep_Time  Sleep_Per  Sleep_Bouts_Num  Avg_Sleep_B  Immobile_Time  Immobile_Per  Imm_Bouts_Num  Avg_Imm_Bout  Mobile_Time  Mobile_Num  Mob_Bouts  Avg_Mob_Bout  Onemin_Imm_B_Num  Onemin_Imm_B_Per  Fragmentation  Exposure_White  Avg_White  Std_White  Max_White  TALT_White  Inv_Time_White  Invalid_White_Per  Exposure_Red  Avg_Red  Std_Red  Max_Red  TALT_Red  Inv_Time_Red  Invalid_Red_Per  Exposure_Green  Avg_Green  Std_Green  Max_Green  TALT_Green  Inv_Time_Green  Invalid_Green_per  Exposure_Blue  Avg_Blue  Std_Blue  Max_Blue  TALT_Blue  Inv_Time_Blue  Invalid_Blue_Per no_value")
 Interval = namedtuple("Interval","Line Epoch Day Seconds Date Time Off_Wrist_Status Activity Marker White_Light Red_Light Green_Light Blue_Light SleepWake Mobility Interval_Status SW_Status no_value")
-
 
 
 def load_file(data_file = DATA_FILE):
@@ -28,15 +26,12 @@ def load_file(data_file = DATA_FILE):
     intervals = intervals[1:]
     return stats, intervals
 
-
-
-
-valid_days = []
 def log(*args):
     if LOGGING:
         print(*args)
 
 def find_valid_days(data_file = DATA_FILE):
+    valid_days = []
     stats, intervals = load_file(data_file)
     print(len(stats))
     print(len(intervals))
@@ -94,6 +89,7 @@ def find_valid_days(data_file = DATA_FILE):
             plt.show()
     return valid_days
 
+
 if __name__ == "__main__":
     df = input("Enter file name: ")
     if len(df) == 0:
@@ -105,6 +101,3 @@ if __name__ == "__main__":
     for date in valid_days:
         print(f"\t{date}")
     print(f"Number of Valid Days: {len(valid_days)}")
-
-
-
