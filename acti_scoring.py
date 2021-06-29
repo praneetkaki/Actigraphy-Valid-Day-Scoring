@@ -37,7 +37,7 @@ def log(*args):
         print(*args)
 
 def find_valid_days(data_file = DATA_FILE):
-    stats, intervals = load_file(DATA_FILE)
+    stats, intervals = load_file(data_file)
     print(len(stats))
     print(len(intervals))
     ed = END_DAY if END_DAY >= 0 else len(stats)
