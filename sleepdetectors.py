@@ -1,12 +1,12 @@
 from configs import *
 from scipy.ndimage import gaussian_filter1d
 
+
 def mean_threshold(arr_activities):
     WINDOW_SIZE = hours_to_intervals(2)
     THRESHOLD = 40
     asleeps = [0 if arr_activities[i - int(WINDOW_SIZE/2): i + int(WINDOW_SIZE/2)].mean() < THRESHOLD else AWAKE_NUM for i in range(len(arr_activities))]
     return asleeps, None
-
 
 def mean_std_threshold(arr_activities):
     WINDOW_SIZE = hours_to_intervals(1.5)
