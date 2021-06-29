@@ -1,6 +1,5 @@
 import csv
 from collections import namedtuple
-from scipy.ndimage import gaussian_filter1d
 import matplotlib.pyplot as plt
 import numpy as np
 from utils import *
