@@ -26,11 +26,14 @@ def load_file(data_file = DATA_FILE):
     intervals = intervals[1:]
     return stats, intervals
 
-def log(*args):
-    if LOGGING:
-        print(*args)
-
 def find_valid_days(data_file = DATA_FILE):
+    log_str = ""
+    def log(*args):
+        if LOGGING:
+            nonlocal log_str
+            print(*args)
+            log_str += " ".join([str(arg) for arg in args]) + "\n"
+    
     valid_days = []
     stats, intervals = load_file(data_file)
     print(len(stats))
@@ -87,7 +90,7 @@ def find_valid_days(data_file = DATA_FILE):
                 plt.plot(times, blurred)
             plt.title(f"DAY {day}: {day_intervals[0].Date}")
             plt.show()
-    return valid_days
+    return valid_days, log_str
 
 
 if __name__ == "__main__":

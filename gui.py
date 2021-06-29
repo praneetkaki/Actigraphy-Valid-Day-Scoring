@@ -14,13 +14,13 @@ while True:
     if event == sg.WIN_CLOSED or event=="Exit":
         break
     elif event == "Submit":
-        valid_days = find_valid_days(values["-IN-"])
+        valid_days, log_str = find_valid_days(values["-IN-"])
 
-        result_str = "Valid Dates: "
+        result_str = f"{log_str}\nValid Dates: "
         for date in valid_days:
             result_str += f"{date}, "
         result_str = result_str[:-2]
-        
+
         result_str += f"\nNumber of Valid Days: {len(valid_days)}"
         window['result'].update(result_str)
 
