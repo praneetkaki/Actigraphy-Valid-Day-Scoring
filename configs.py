@@ -1,7 +1,7 @@
 from utils import *
 
 AWAKE_NUM = 400
-PADDING = int(hours_to_intervals(0.5))
+PADDING = int(hours_to_intervals(0.25))
 START_DAY = 1
 END_DAY = -1
 PLOTTING = False
