@@ -1,5 +1,6 @@
 import csv
 from collections import namedtuple
+from tkinter.constants import OFF
 import matplotlib.pyplot as plt
 import numpy as np
 from utils import *
@@ -50,6 +51,12 @@ def find_valid_days(data_file = DATA_FILE):
         if not less_than_four(stats[day - 1]):
             log(f"{day_intervals[0].Date} has more than 4 hours of off-wrist")
             continue
+
+        if not grayed_out_day(stats[day - 1]):
+            log(f"{day_intervals[0].Date} has more than 2 hours of grayed out invalid data")
+            continue
+
+
         
         max_count = 0
         cur_count = 0
@@ -68,27 +75,64 @@ def find_valid_days(data_file = DATA_FILE):
             log(f"{day_intervals[0].Date} has too many sleep hours")
             continue
 
-
+        off_wrists = []
         for i in range(len(asleeps)):
             if day_intervals[i].Off_Wrist_Status == "1":
                 asleeps[i] = AWAKE_NUM
+                off_wrists.append(OFF_WRIST_NUM) 
+            else:
+                off_wrists.append(None)
         invalid_day = False
 
+        # for i in range(len(day_intervals)):
+        #     if (i + PADDING < len(asleeps) and asleeps[i + PADDING] == 0) or (i - PADDING >= 0 and asleeps[i - PADDING] == 0):
+        #         if day_intervals[i].Off_Wrist_Status == "1":
+        #             invalid_day = True
+        #             log(f"{day_intervals[0].Date} has off-wrist near a sleep period")
+        #             break
+
+        consec_off_wrist_time = 0
+        current_off_wrist_status = False
+        false_to_true = False
+
         for i in range(len(day_intervals)):
-            if (i + PADDING < len(asleeps) and asleeps[i + PADDING] == 0) or (i - PADDING >= 0 and asleeps[i - PADDING] == 0):
-                if day_intervals[i].Off_Wrist_Status == "1":
-                    invalid_day = True
-                    log(f"{day_intervals[0].Date} has off-wrist near a sleep period")
-                    break
+            if day_intervals[i].Off_Wrist_Status == "1":
+                if not current_off_wrist_status and (i - PADDING >= 0 and asleeps[i - PADDING] == 0):
+                    false_to_true = True
+                current_off_wrist_status = True
+                consec_off_wrist_time += 1
+            else: #if it is NOT off wrist
+                if current_off_wrist_status and consec_off_wrist_time >= hours_to_intervals(1):
+                    if false_to_true:
+                        invalid_day = True
+                        log(f"{day_intervals[0].Date} has off-wrist within 10 minutes of a wake time")
+                        break
+                    if i + PADDING < len(asleeps) and asleeps[i + PADDING] == 0:
+                        invalid_day = True
+                        log(f"{day_intervals[0].Date} has off-wrist within 10 minutes of a bedtime")
+                        break
+                false_to_true = False
+                current_off_wrist_status = False
+                consec_off_wrist_time = 0
+        if not invalid_day:
+            if false_to_true:
+                invalid_day = True
+                log(f"{day_intervals[0].Date} has off-wrist within 10 minutes of a wake time")
+            if i + PADDING < len(asleeps) and asleeps[i + PADDING] == 0:
+                invalid_day = True
+                log(f"{day_intervals[0].Date} has off-wrist within 10 minutes of a bedtime")
+    
         if not invalid_day:
             valid_days.append(day_intervals[0].Date)
 
         if PLOTTING:
-            plt.plot(times, activities)
-            plt.plot(times, asleeps)
+            plt.plot(times, activities, label = "Activity")
+            plt.plot(times, asleeps, label = "Awake")
+            plt.plot(times, off_wrists, label = "Off Wrist Status")
             if blurred is not None:
                 plt.plot(times, blurred)
             plt.title(f"DAY {day}: {day_intervals[0].Date}")
+            plt.legend()
             plt.show()
     return valid_days, log_str
 

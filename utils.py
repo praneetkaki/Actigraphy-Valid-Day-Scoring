@@ -3,6 +3,11 @@ def less_than_four(stat):
         return float(stat.Off_Wrist) < 240
     return False
 
+def grayed_out_day(stat):
+    if stat.Inv_Time_SW.lower() != "nan" and stat.Interval_Type == "DAILY":
+        return float(stat.Inv_Time_SW) < 120
+    return False
+
 def parse_time(str_time):
     str_time,tod = str_time.split(" ")
     h, m, s = [int(t) for t in str_time.split(":")]
