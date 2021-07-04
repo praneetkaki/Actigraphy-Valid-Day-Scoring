@@ -85,20 +85,20 @@ def find_valid_days(data_file = DATA_FILE):
         invalid_day = False
 
         #TODO: Fix this
-        asleeps2 = np.array(asleeps)
+        asleeps = np.array(asleeps)
         consec_sleep_intervals = 0
         consec_awake_intervals = 0
-        for i in range(len(asleeps2)):
-            if asleeps2[i] == 0:
+        for i in range(len(asleeps)):
+            if asleeps[i] == 0:
                 consec_sleep_intervals += 1
             else: #if NOT asleep
                 if consec_sleep_intervals > 0 and consec_sleep_intervals < MIN_SLEEP_AWAKE_PERIOD_TIME:
-                    asleeps2[i - consec_sleep_intervals:i] = AWAKE_NUM
+                    asleeps[i - consec_sleep_intervals:i] = AWAKE_NUM
                 consec_sleep_intervals = 0
-        for i in range(len(asleeps2)):
-            if asleeps2[i] == 0:
+        for i in range(len(asleeps)):
+            if asleeps[i] == 0:
                 if consec_awake_intervals > 0 and consec_awake_intervals < MIN_SLEEP_AWAKE_PERIOD_TIME:
-                    asleeps2[i - consec_awake_intervals :i] = 0
+                    asleeps[i - consec_awake_intervals :i] = 0
                 consec_awake_intervals = 0
 
             else: #if NOT asleep
@@ -143,7 +143,7 @@ def find_valid_days(data_file = DATA_FILE):
             plt.plot(times, activities, label = "Activity")
             plt.plot(times, asleeps, label = "Awake")
             plt.plot(times, off_wrists, label = "Off Wrist Status")
-            plt.plot(times, asleeps2, label = "Asleeps 2")
+          
             if blurred is not None:
                 plt.plot(times, blurred)
             plt.title(f"DAY {day}: {day_intervals[0].Date}")
