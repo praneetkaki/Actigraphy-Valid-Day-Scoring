@@ -84,12 +84,26 @@ def find_valid_days(data_file = DATA_FILE):
                 off_wrists.append(None)
         invalid_day = False
 
-        # for i in range(len(day_intervals)):
-        #     if (i + PADDING < len(asleeps) and asleeps[i + PADDING] == 0) or (i - PADDING >= 0 and asleeps[i - PADDING] == 0):
-        #         if day_intervals[i].Off_Wrist_Status == "1":
-        #             invalid_day = True
-        #             log(f"{day_intervals[0].Date} has off-wrist near a sleep period")
-        #             break
+        #TODO: Fix this
+        asleeps2 = np.array(asleeps)
+        consec_sleep_intervals = 0
+        consec_awake_intervals = 0
+        for i in range(len(asleeps2)):
+            if asleeps2[i] == 0:
+                consec_sleep_intervals += 1
+            else: #if NOT asleep
+                if consec_sleep_intervals > 0 and consec_sleep_intervals < MIN_SLEEP_AWAKE_PERIOD_TIME:
+                    asleeps2[i - consec_sleep_intervals:i] = AWAKE_NUM
+                consec_sleep_intervals = 0
+        for i in range(len(asleeps2)):
+            if asleeps2[i] == 0:
+                if consec_awake_intervals > 0 and consec_awake_intervals < MIN_SLEEP_AWAKE_PERIOD_TIME:
+                    asleeps2[i - consec_awake_intervals :i] = 0
+                consec_awake_intervals = 0
+
+            else: #if NOT asleep
+                consec_awake_intervals += 1
+
 
         consec_off_wrist_time = 0
         current_off_wrist_status = False
@@ -129,6 +143,7 @@ def find_valid_days(data_file = DATA_FILE):
             plt.plot(times, activities, label = "Activity")
             plt.plot(times, asleeps, label = "Awake")
             plt.plot(times, off_wrists, label = "Off Wrist Status")
+            plt.plot(times, asleeps2, label = "Asleeps 2")
             if blurred is not None:
                 plt.plot(times, blurred)
             plt.title(f"DAY {day}: {day_intervals[0].Date}")
@@ -148,3 +163,4 @@ if __name__ == "__main__":
     for date in valid_days:
         print(f"\t{date}")
     print(f"Number of Valid Days: {len(valid_days)}")
+

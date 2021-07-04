@@ -9,3 +9,5 @@ PLOTTING = True
 LOGGING = True
 MAX_SLEEP_HOURS = 13
 DATA_FILE = "12203_4_21_2021_12_00_00_PM_New_Analysis.csv"
+
+MIN_SLEEP_AWAKE_PERIOD_TIME = hours_to_intervals(1)
